@@ -1,8 +1,16 @@
-import mongoose from "mongoose";
-import { dbName } from "./constant.js";
+import dotenv from "dotenv"; // helper package that helps node to find and read .env variables and inject them into process object
+import connectDB from "./db/index.js";
+
+
+dotenv.config({ path: './.env' }) // used to load env variables in to process object 
+
+connectDB()
 
 
 
+
+
+/*
 
 import express from "express";
 const app=express();
@@ -26,3 +34,4 @@ const app=express();
         throw error;
     }
 })()
+    */
