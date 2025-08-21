@@ -1,6 +1,31 @@
 import mongoose from "mongoose";
 import { dbName } from "../constant.js";
 
+
+/**
+ * establish connection with mongoes databse using mongoose
+ * 
+ * 
+ * @async
+ * @connectDB
+ * @returns {promise<void>} returns an empty promise when mongodb connection is successfull
+ * @throws {Error} mongoose throws an error  when connection fails
+ */
+const connectDB =async ()=>{
+    const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}/${dbName}`);
+    console.log(`mogoDB connected  , connection instance :${connectionInstance.connection.host}`);
+}
+
+export default connectDB;
+
+
+
+
+
+
+
+
+
 /** 
 * connect to mongoDB Database
 
@@ -8,6 +33,7 @@ import { dbName } from "../constant.js";
 * @returns {promise<void>} resolves when connection is success
 * @throws {Error} if mongoDB connection fails
 */
+/*
 const connectDB = async ()=>{
     try {
         const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}/${dbName}`);
@@ -24,3 +50,5 @@ const connectDB = async ()=>{
 }
 
 export default connectDB;
+
+*/

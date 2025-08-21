@@ -1,14 +1,16 @@
 import dotenv from "dotenv"; // helper package that helps node to find and read .env variables and inject them into process object
 import connectDB from "./db/index.js";
 import { app } from "./app.js";
+import { asyncTCWrapper } from "./utils/tryCatchWrapper.js";
 
 
 // used to load env variables in to process object {process.env}
 dotenv.config({ path: './.env' }) 
 
 
-
+/*
 // establish connection with mongoDB before starting the server
+//to be used with normall call not with wrapper
  connectDB()
     .then(()=>{
         
@@ -21,13 +23,26 @@ dotenv.config({ path: './.env' })
             process.exit(1);
         })
     })
-    
+*/
 
+//connectDB with try-catch wrapper
+const safeConnectDB = asyncTCWrapper(connectDB);
+safeConnectDB()
+    .then(()=>{
 
+        const server=app.listen(process.env.PORT || 8000 , ()=>{
+            console.log(`app is listning on port : ${process.env.PORT}`);
+        })
 
-
-
-
+        server.on("error" , (error)=>{
+            console.log(`server connection failed : ${error}`);
+            process.exit(1);
+        })
+    })
+    .catch((err)=>{
+        console.log(`mongoDB connection Failed ERROR : ${err}`);
+        process.exit(1);
+    })
 
 
 
