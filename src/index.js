@@ -1,19 +1,14 @@
 import dotenv from "dotenv"; // helper package that helps node to find and read .env variables and inject them into process object
 import connectDB from "./db/index.js";
-import express from "express";
+import { app } from "./app.js";
+
 
 // used to load env variables in to process object {process.env}
 dotenv.config({ path: './.env' }) 
 
-//create express application syntax
-const app=express()
 
 
-
-/** 
-* connect to mongoDB Database
-* @returns {promise<void>}
-*/
+// establish connection with mongoDB before starting the server
  connectDB()
     .then(()=>{
         

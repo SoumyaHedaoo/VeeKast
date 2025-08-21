@@ -1,7 +1,13 @@
 import mongoose from "mongoose";
 import { dbName } from "../constant.js";
 
+/** 
+* connect to mongoDB Database
 
+
+* @returns {promise<void>} resolves when connection is success
+* @throws {Error} if mongoDB connection fails
+*/
 const connectDB = async ()=>{
     try {
         const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}/${dbName}`);
