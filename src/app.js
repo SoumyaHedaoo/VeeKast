@@ -1,7 +1,7 @@
 import express, { urlencoded } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { reqLimit } from "./constant";
+import { reqLimit } from "./constant.js";
 
 
 //create a express application instance
