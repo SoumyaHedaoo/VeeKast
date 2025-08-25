@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+
 
 const userSchema = new mongoose.Schema({
     userName :{
@@ -42,5 +44,17 @@ const userSchema = new mongoose.Schema({
 
 },{timestamps :true});
 
+
+userSchema.pre("save" , async function (next){
+    if(!this.isModified("password")) return next();
+    try {
+        const hashedpasssword=await bcrypt.hash(this.password ,10);
+        this.password=hashedpasssword;
+        next();
+    } catch (error) {
+        console.log("incryption of password failed , data not saved , ERROR:" , error);
+        next(error);
+    }
+});
 
 export const User = mongoose.model("User" , userSchema);
