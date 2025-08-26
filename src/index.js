@@ -1,7 +1,6 @@
 import dotenv from "dotenv"; // helper package that helps node to find and read .env variables and inject them into process object
 import connectDB from "./db/index.js";
 import { app } from "./app.js";
-import { asyncTCWrapper } from "./utils/tryCatchWrapper.js";
 
 
 // used to load env variables in to process object {process.env}
@@ -25,9 +24,8 @@ dotenv.config({ path: './.env' })
     })
 */
 
-//connectDB with try-catch wrapper
-const safeConnectDB = asyncTCWrapper(connectDB);
-safeConnectDB()
+//database connection 
+connectDB()
     .then(()=>{
 
         const server=app.listen(process.env.PORT || 8000 , ()=>{

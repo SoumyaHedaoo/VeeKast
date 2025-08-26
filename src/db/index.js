@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { dbName } from "../constant.js";
-
+import { asyncTCWrapper } from "../utils/tryCatchWrapper.js";
 
 /**
  * establish connection with mongoes databse using mongoose
@@ -11,11 +11,11 @@ import { dbName } from "../constant.js";
  * @returns {promise<void>} returns an empty promise when mongodb connection is successfull
  * @throws {Error} mongoose throws an error  when connection fails
  */
-const connectDB =async ()=>{
-    const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}/${dbName}`);
-    console.log(`mogoDB connected  , connection instance :${connectionInstance.connection.host}`);
-}
-
+const connectDB = asyncTCWrapper(async ()=>{
+        const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}/${dbName}`);
+        console.log(`mogoDB connected  , connection instance :${connectionInstance.connection.host}`);
+    }
+)
 export default connectDB;
 
 
