@@ -1,4 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
+import {promises as fs} from "fs";
 
 
 
@@ -8,3 +9,28 @@ import { v2 as cloudinary } from "cloudinary";
         api_key: process.env.CLOUDINARY_API_KEY, 
         api_secret: process.env.CLOUDINARY_API_SECRET,
     });
+
+    const cloudinaryUpload=async (localFilePath)=>{
+        try {
+            if(!localFilePath) return null;
+
+            const uploadResponse = await cloudinary.uploader.upload(localFilePath , {
+                resource_type :'auto'
+            })
+
+            console.log("file uploaded successfully!!");
+            return uploadResponse;
+
+        } catch (error) {
+            console.log("unable to upload on cloudinary ,ERROR: " ,error );
+            return null;
+        }finally{
+            try {
+                await fs.unlink(localFilePath)
+            } catch (error) {
+                console.log("unlink operation failed , ERROR : " , error);   
+            }
+        }
+    }
+
+export {cloudinaryUpload};
