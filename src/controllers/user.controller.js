@@ -81,5 +81,56 @@ const registerUser =expressAsyncHandler(async(req , res)=>{
    )
 })
 
+const loginUser = expressAsyncHandler(async(req , res)=>{
+   //get data from req.body , destructure it
+   //validate 01- check if data fields are empty
+   //validate 02- find the enty with same credetial
+   //throw error if not found
+   //if found generate access token and refresh token , return token via secure cookies
 
-export {registerUser}
+   const {email , userName , password } = req.body;
+
+   if(!email && !userName){
+      throw new ApiError(404 , "email or userName not found");
+   }
+
+   const user = await User.findOne({
+      $or :[{userName} , {email}]
+   })
+
+   if(!user){
+      throw new ApiError(404 , "wrong credentials entered");
+   }
+
+   const passwordCheck = user.isPassCorrect(password);
+   if(!passwordCheck){
+      throw new ApiError(400 , "wrong password entered");
+   }
+
+   const {accessToken , refreshToken} = await generateAccessTokenandRefreshToken(user._id);
+
+   const loggedinUser = await User.findById(user._id).select("-password -refreshToken")
+
+   const options={
+      httpOnly : true,
+      secure : true,
+   }
+
+   return res
+            .status(200)
+            .cookie("accessToken" , accessToken , options)
+            .cookie("refreshToken" , refreshToken , options)
+            .json(new ApiResponse(200 , {
+               user: loggedinUser,
+               accessToken,
+               refreshToken,
+            } , "loggedIn successfull"))
+
+
+
+
+
+})
+
+
+export {registerUser  , loginUser}
