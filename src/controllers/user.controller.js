@@ -133,4 +133,30 @@ const loginUser = expressAsyncHandler(async(req , res)=>{
 })
 
 
-export {registerUser  , loginUser}
+const logoutUser = expressAsyncHandler(async(req , res)=>{
+   const user = req.user;
+
+   if(!user) throw new ApiError(401 , "unouthorised assecc token");
+
+   await User.findByIdAndUpdate(user._id , {
+      $set : {
+         refreshToken : undefined,
+      }
+   },{
+      new : true,
+   })
+
+   const options={
+      httpOnly : true,
+      secure : true,
+   }
+
+   res
+      .status(200)
+      .clearCookie("accessToken" , options)
+      .clearCookie("refreshToken" , options)
+      .json(new ApiResponse(200 , {} , "user logout successfully"))
+   
+})
+
+export {registerUser  , loginUser , logoutUser}
