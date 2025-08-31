@@ -3,6 +3,20 @@ import { expressAsyncHandler } from "../utils/expressAsyncHandler.js";
 import { User } from "../models/user.model.js";
 import { cloudinaryUpload } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncTCWrapper } from "../utils/tryCatchWrapper.js";
+
+const generateAccessTokenandRefreshToken = asyncTCWrapper(async(id)=>{
+
+   const user = await User.findById(id);
+   
+   const accessToken = user.generateAccessToken();
+   const refreshToken = user.generateRefreshToken();
+
+   user.refreshToken=refreshToken;
+   await user.save({validateBeforeSave : false})
+
+   return({accessToken , refreshToken});
+})
 
 const registerUser =expressAsyncHandler(async(req , res)=>{
    
@@ -66,5 +80,6 @@ const registerUser =expressAsyncHandler(async(req , res)=>{
       )
    )
 })
+
 
 export {registerUser}
