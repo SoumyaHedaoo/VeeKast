@@ -213,4 +213,27 @@ const getUser = expressAsyncHandler(async (req , res)=>{
       .json(new ApiResponse(200 , req.user , "user fetched successfully"))
 })
 
-export {registerUser  , loginUser , logoutUser , refreshAccessToken , updatePassword , getUser}
+const updateDetails = expressAsyncHandler(async(req , res)=>{
+   const {userName , email} = req.body;
+
+   const user = User.findByIdAndUpdate(req.user?._id , {
+      $set : {
+         userName : userName , 
+         email : email
+      }
+   } , {new : true}).select("-password -refreshToken")
+
+   res
+      .status(200)
+      .json(new ApiResponse(200 , {user} , "user updated successfully"));
+
+})
+export {
+   registerUser  , 
+   loginUser , 
+   logoutUser , 
+   refreshAccessToken , 
+   updatePassword , 
+   getUser,
+   updateDetails
+}
