@@ -133,7 +133,6 @@ const loginUser = expressAsyncHandler(async(req , res)=>{
 
 })
 
-
 const logoutUser = expressAsyncHandler(async(req , res)=>{
    const user = req.user;
 
@@ -159,7 +158,6 @@ const logoutUser = expressAsyncHandler(async(req , res)=>{
       .json(new ApiResponse(200 , {} , "user logout successfully"))
    
 })
-
 
 const refreshAccessToken = expressAsyncHandler(async(req , res)=>{
 
@@ -209,4 +207,10 @@ const updatePassword = expressAsyncHandler(async(req , res)=>{
 
 })
 
-export {registerUser  , loginUser , logoutUser , refreshAccessToken , updatePassword}
+const getUser = expressAsyncHandler(async (req , res)=>{
+   res
+      .status(200)
+      .json(new ApiResponse(200 , req.user , "user fetched successfully"))
+})
+
+export {registerUser  , loginUser , logoutUser , refreshAccessToken , updatePassword , getUser}
