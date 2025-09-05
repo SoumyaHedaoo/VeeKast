@@ -189,4 +189,24 @@ const refreshAccessToken = expressAsyncHandler(async(req , res)=>{
             .json(new ApiResponse(200 , {refreshToken , accessToken}, "redestributed accesstoken successfully"))
 })
 
-export {registerUser  , loginUser , logoutUser , refreshAccessToken}
+const updatePassword = expressAsyncHandler(async(req , res)=>{
+   const {oldPassword , newPassword} = req.body;
+
+   const user = await User.find(req.user?._id);
+
+   if(!user) throw new ApiError(401 , "user not loggedin");
+
+   const validPassword=await user.isPassCorrect(oldPassword);
+
+   if(!validPassword) throw new ApiError(400 , "old password is incorrect");
+
+   user.password = newPassword;
+   user.save({validateBeforeSave : false});
+
+   res
+      .status(200)
+      .json(new ApiResponse(200 , {} , "password updated successfully"));
+
+})
+
+export {registerUser  , loginUser , logoutUser , refreshAccessToken , updatePassword}
