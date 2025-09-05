@@ -216,7 +216,7 @@ const getUser = expressAsyncHandler(async (req , res)=>{
 const updateDetails = expressAsyncHandler(async(req , res)=>{
    const {userName , email} = req.body;
 
-   const user = User.findByIdAndUpdate(req.user?._id , {
+   const user = await User.findByIdAndUpdate(req.user?._id , {
       $set : {
          userName : userName , 
          email : email
