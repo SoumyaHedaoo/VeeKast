@@ -251,6 +251,28 @@ const updateAvatarImage = expressAsyncHandler(async(req , res)=>{
       .json(new ApiResponse(200 , user , "Avatar upated successfully"))
 })
 
+const updateCoverImage = expressAsyncHandler(async(req , res)=>{
+   if(!req.user) throw new ApiError(404 , "user not found");
+
+   const coverImageLocalPath = req.file?.coverImage[0]?.path;
+
+   if(!coverImageLocalPath) throw new ApiError(404 , "new cover  image not found");
+
+   const coverImageCloudinary = cloudinaryUpload(coverImageLocalPath);
+
+   if(!coverImageCloudinary) throw new ApiError(500 , "unable to upload item to cloudinary");
+
+   const user = await User.findByIdAndUpdate(req.user._id , {
+      $set: {
+         coverImage : coverImageCloudinary.url
+      }
+   } , {new : true}).select("-password -refreshToken")
+
+   res
+      .status(200)
+      .json(new ApiResponse(200 , user , "CoverImage upated successfully"))
+})
+
 export {
    registerUser  , 
    loginUser , 
@@ -260,4 +282,5 @@ export {
    getUser ,
    updateDetails , 
    updateAvatarImage ,
+   updateCoverImage ,
 }
