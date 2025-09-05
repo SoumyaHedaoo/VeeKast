@@ -229,7 +229,7 @@ const updateDetails = expressAsyncHandler(async(req , res)=>{
 
 })
 
-const updateAvatarImage = expressAsyncHandler(async(req , _)=>{
+const updateAvatarImage = expressAsyncHandler(async(req , res)=>{
    if(!req.user) throw new ApiError(404 , "user not found");
 
    const avatarLocalPath = req.file?.avatar[0]?.path;
@@ -240,11 +240,15 @@ const updateAvatarImage = expressAsyncHandler(async(req , _)=>{
 
    if(!avatarCloudinary) throw new ApiError(500 , "ubale to upload item to cloudinary");
 
-   await User.findByIdAndUpdate(req.user._id , {
+   const user = await User.findByIdAndUpdate(req.user._id , {
       $set: {
          avatar : avatarCloudinary.url
       }
    } , {new : true}).select("-password -refreshToken")
+
+   res
+      .status(200)
+      .json(new ApiResponse(200 , user , "Avatar upated successfully"))
 })
 
 export {
