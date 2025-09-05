@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { cloudinaryUpload } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncTCWrapper } from "../utils/tryCatchWrapper.js";
+import jwt from "jsonwebtoken";
 
 const generateAccessTokenandRefreshToken = asyncTCWrapper(async(id)=>{
 
@@ -159,4 +160,33 @@ const logoutUser = expressAsyncHandler(async(req , res)=>{
    
 })
 
-export {registerUser  , loginUser , logoutUser}
+
+const refreshAccessToken = expressAsyncHandler(async(req , res)=>{
+
+   const incomingRefreshToken = req.cookies?.refreshToken || req.body.refreshToken;
+
+   if(!incomingRefreshToken) throw new ApiError(404 , "refreshToken not found");
+
+   const decodedToken = jwt.verify(incomingRefreshToken , process.env.REFRESH_TOKEN_SECRET_KEY);
+
+   const user=await User.findById(decodedToken?._id);
+
+   if(!user) throw new ApiError(401 , "refresh token expire or used");
+
+   if(incomingRefreshToken !== user.refreshToken) throw new ApiError(401 , "refreshtoken not matched");
+
+   const {accessToken , refreshToken} = generateAccessTokenandRefreshToken(user._id);
+
+   const options = {
+      secure: true,
+      httpOnly: true,
+   }
+
+   return res
+            .status(200)
+            .cookie("refreshToken" , refreshToken , options)
+            .cookie("accessToken" , accessToken , options)
+            .json(new ApiResponse(200 , {refreshToken , accessToken}, "redestributed accesstoken successfully"))
+})
+
+export {registerUser  , loginUser , logoutUser , refreshAccessToken}
