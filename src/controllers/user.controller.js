@@ -273,6 +273,70 @@ const updateCoverImage = expressAsyncHandler(async(req , res)=>{
       .json(new ApiResponse(200 , user , "CoverImage upated successfully"))
 })
 
+const getUserChannelProfile = expressAsyncHandler(async (req , res)=>{
+   const {userName} = req.params;
+
+   if(!userName?.trim()) throw new ApiError(400 , "username is missing");
+
+   const channelDetails = await User.aggregate([
+      {
+         $match : {
+            userName : userName,
+         }
+      },
+      {
+         $lookup : {
+            from : "subscriptions",
+            localField : "_id",
+            foreignField : "channel",
+            as : "subscribers"
+         }
+      },
+      {
+         $lookup :{
+            from : "subscriptions",
+            localField : "_id",
+            foreignField : "subscriber",
+            as : "subscribedTO"
+         }
+      },
+      {
+         $addFields : {
+            subscribersCount : {
+               $size : "$subscribers"
+            },
+            myTotalSubscriptions : {
+               $size : "$subscribedTO"
+            },
+            isSubscribed :{
+               $cond : {
+                  if : {$in :[req.user?._id , "$subscribers.subscriber"]},
+                  then : true,
+                  else :false,
+               }
+            }
+         }
+      },{
+         $project :{
+            coverImage :1,
+            avatar :1,
+            fullName:1,
+            userName:1,
+            subscribersCount:1,
+            myTotalSubscriptions:1,
+            isSubscribed:1,
+            email:1,
+         }
+      }
+   ])
+
+   if(!channelDetails) throw new ApiError(400 , "unable to get channel details")
+
+   res
+      .status(200)
+      .json(new ApiResponse(200 , channelDetails[0] , "channel details fetched successfully"))
+})
+
 export {
    registerUser  , 
    loginUser , 
@@ -283,4 +347,5 @@ export {
    updateDetails , 
    updateAvatarImage ,
    updateCoverImage ,
+   getUserChannelProfile
 }
