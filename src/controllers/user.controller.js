@@ -190,7 +190,7 @@ const refreshAccessToken = expressAsyncHandler(async(req , res)=>{
 const updatePassword = expressAsyncHandler(async(req , res)=>{
    const {oldPassword , newPassword} = req.body;
 
-   const user = await User.find(req.user?._id);
+   const user = await User.findById(req.user?._id);
 
    if(!user) throw new ApiError(401 , "user not loggedin");
 
@@ -199,7 +199,7 @@ const updatePassword = expressAsyncHandler(async(req , res)=>{
    if(!validPassword) throw new ApiError(400 , "old password is incorrect");
 
    user.password = newPassword;
-   user.save({validateBeforeSave : false});
+   await user.save({validateBeforeSave : false});
 
    res
       .status(200)
