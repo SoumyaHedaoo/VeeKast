@@ -34,5 +34,7 @@ router.route("/password-change").post(verifyJwtToken , updatePassword);
 
 router.route("/get-user").get(verifyJwtToken , getUser);
 
+router.route("/update-user").post(verifyJwtToken , updateDetails);
+
 
 export default router;
