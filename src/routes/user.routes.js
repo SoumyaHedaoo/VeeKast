@@ -9,6 +9,7 @@ import {
     updateDetails,
     updateAvatarImage,
     updateCoverImage,
+    getUserChannelProfile,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJwtToken } from "../middlewares/auth.middleware.js";
@@ -42,5 +43,6 @@ router.route("/update-avatar").post(upload.single('avatar') ,verifyJwtToken ,  u
 
 router.route('/update-coverImage').post(upload.single('coverImage') , verifyJwtToken , updateCoverImage);
 
+router.route('/channelProfile/:userName').get(verifyJwtToken , getUserChannelProfile);
 
 export default router;
