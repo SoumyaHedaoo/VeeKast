@@ -254,11 +254,11 @@ const updateAvatarImage = expressAsyncHandler(async(req , res)=>{
 const updateCoverImage = expressAsyncHandler(async(req , res)=>{
    if(!req.user) throw new ApiError(404 , "user not found");
 
-   const coverImageLocalPath = req.file?.coverImage[0]?.path;
-   console.log("req.file object :" , req.file);
+   const coverImageLocalPath = req.file?.path;
+
    if(!coverImageLocalPath) throw new ApiError(404 , "new cover  image not found");
 
-   const coverImageCloudinary = cloudinaryUpload(coverImageLocalPath);
+   const coverImageCloudinary = await cloudinaryUpload(coverImageLocalPath);
 
    if(!coverImageCloudinary) throw new ApiError(500 , "unable to upload item to cloudinary");
 
