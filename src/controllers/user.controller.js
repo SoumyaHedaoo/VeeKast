@@ -232,11 +232,11 @@ const updateDetails = expressAsyncHandler(async(req , res)=>{
 const updateAvatarImage = expressAsyncHandler(async(req , res)=>{
    if(!req.user) throw new ApiError(404 , "user not found");
 
-   const avatarLocalPath = req.file?.avatar[0]?.path;
+   const avatarLocalPath = req.file?.path;
 
    if(!avatarLocalPath) throw new ApiError(404 , "new avatar image not found");
 
-   const avatarCloudinary = cloudinaryUpload(avatarLocalPath);
+   const avatarCloudinary = await cloudinaryUpload(avatarLocalPath);
 
    if(!avatarCloudinary) throw new ApiError(500 , "ubale to upload item to cloudinary");
 

@@ -7,6 +7,7 @@ import {
     updatePassword,
     getUser,
     updateDetails,
+    updateAvatarImage,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJwtToken } from "../middlewares/auth.middleware.js";
@@ -35,6 +36,8 @@ router.route("/password-change").post(verifyJwtToken , updatePassword);
 router.route("/get-user").get(verifyJwtToken , getUser);
 
 router.route("/update-user").post(verifyJwtToken , updateDetails);
+
+router.route("/update-avatar").post(upload.single('avatar') ,verifyJwtToken ,  updateAvatarImage)
 
 
 export default router;
