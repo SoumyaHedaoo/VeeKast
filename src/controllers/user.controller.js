@@ -103,7 +103,7 @@ const loginUser = expressAsyncHandler(async(req , res)=>{
       throw new ApiError(404 , "wrong credentials entered");
    }
 
-   const passwordCheck = user.isPassCorrect(password);
+   const passwordCheck = await user.isPassCorrect(password);
    if(!passwordCheck){
       throw new ApiError(400 , "wrong password entered");
    }
@@ -199,7 +199,7 @@ const updatePassword = expressAsyncHandler(async(req , res)=>{
    if(!validPassword) throw new ApiError(400 , "old password is incorrect");
 
    user.password = newPassword;
-   await user.save({validateBeforeSave : false});
+   await user.save();
 
    res
       .status(200)
@@ -255,7 +255,7 @@ const updateCoverImage = expressAsyncHandler(async(req , res)=>{
    if(!req.user) throw new ApiError(404 , "user not found");
 
    const coverImageLocalPath = req.file?.coverImage[0]?.path;
-
+   console.log("req.file object :" , req.file);
    if(!coverImageLocalPath) throw new ApiError(404 , "new cover  image not found");
 
    const coverImageCloudinary = cloudinaryUpload(coverImageLocalPath);
