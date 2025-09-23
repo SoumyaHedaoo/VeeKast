@@ -15,11 +15,11 @@ const videoSchema = new mongoose.Schema({
         type: String,
         required:true,
     },
-    Description :{
+    description :{
         type: String,
         required:true,
     },
-    durartion:{
+    duration:{
         type: Number,
         required:true,
     },
