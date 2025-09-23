@@ -1,7 +1,7 @@
 import { ApiError } from "../utils/ApiError.js";
 import { expressAsyncHandler } from "../utils/expressAsyncHandler.js";
 import { User } from "../models/user.model.js";
-import { cloudinaryUpload } from "../utils/cloudinary.js";
+import { cloudinaryUpload } from "../utils/cloudinaryUpload.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncTCWrapper } from "../utils/tryCatchWrapper.js";
 import jwt from "jsonwebtoken";

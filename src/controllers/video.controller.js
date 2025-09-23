@@ -1,7 +1,7 @@
 import { Video } from "../models/video.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { cloudinaryUpload } from "../utils/cloudinary.js";
+import { cloudinaryUpload } from "../utils/cloudinaryUpload.js";
 import { expressAsyncHandler } from "../utils/expressAsyncHandler.js";
 
 const publishVideo = expressAsyncHandler(async(req , res)=>{

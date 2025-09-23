@@ -1,12 +1,12 @@
 import dotenv from "dotenv"; // helper package that helps node to find and read .env variables and inject them into process object
 import connectDB from "./db/index.js";
 import { app } from "./app.js";
-
+import { configureCloudinary } from "./utils/cloudinaryClient.js";
 
 // used to load env variables in to process object {process.env}
 dotenv.config({ path: './.env' }) 
 
-
+configureCloudinary();
 /*
 // establish connection with mongoDB before starting the server
 //to be used with normall call not with wrapper
