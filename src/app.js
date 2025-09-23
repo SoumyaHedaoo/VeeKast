@@ -22,8 +22,10 @@ app.use(express.static("public")); // serves static files from "public" folder
 app.use(cookieParser()); // makes users cookie accessible
 
 //router import
-import userRouter from "./routes/user.routes.js"
+import userRouter from "./routes/user.routes.js";
+import videoRouter from "./routes/video.route.js";
 
 app.use("/api/v1/user" , userRouter);
+app.use("/api/v1/video" , videoRouter);
 
 export {app};
