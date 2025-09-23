@@ -51,8 +51,19 @@ const publishVideo = expressAsyncHandler(async(req , res)=>{
             )
 })
 
+const getVideo = expressAsyncHandler(async(req , res)=>{
+    const {videoId} = req.params;
+
+    const video = await Video.findById(videoId);
+
+    if(!video) throw new ApiError(404 , "unable to find video")
+
+    return res
+            .status(200)
+            .json(new ApiResponse(200 , video , "video fetched successfully"))
+})
 
 export {
     publishVideo , 
-
+    getVideo
 }
