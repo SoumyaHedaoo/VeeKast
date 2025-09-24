@@ -5,6 +5,7 @@ import { cloudinaryUpload } from "../utils/cloudinaryUpload.js";
 import { expressAsyncHandler } from "../utils/expressAsyncHandler.js";
 
 const publishVideo = expressAsyncHandler(async(req , res)=>{
+   console.log("req file array : " , req.files);
    
     const videoFileLocalPath = req.files?.videoFile[0].path;
     const thumbnailLocalPath = req.files?.thumbnail[0].path;
@@ -63,7 +64,34 @@ const getVideo = expressAsyncHandler(async(req , res)=>{
             .json(new ApiResponse(200 , video , "video fetched successfully"))
 })
 
+const updateVideoDetails = expressAsyncHandler(async(req , res)=>{
+    const {videoId} = req.params;
+
+    const {title , description }=req.body;
+    const thumbnailLocalFilePath = req.file?.path;
+
+    if(!title || !description || !thumbnailLocalFilePath) throw new ApiError(404 , "input paramaters not found");
+
+    const cloudinaryThumbnail = await cloudinaryUpload(thumbnailLocalFilePath);
+    
+    if(!cloudinaryThumbnail) throw new ApiError(500 , "unable to upload on cloudinary");
+
+    const video = await Video.findByIdAndUpdate(videoId , {
+        $set : {
+            title : title ,
+            description : description ,
+            thumbnail : cloudinaryThumbnail.secure_url ,
+        }
+    },{new : true});
+
+    return res
+            .status(200)
+            .json(new ApiResponse(200 , video , "data updated succesfully!!!"))
+
+})
+
 export {
     publishVideo , 
-    getVideo
+    getVideo , 
+    updateVideoDetails ,
 }
