@@ -105,9 +105,21 @@ const toggleVideoPublishStatus = expressAsyncHandler(async(req , res)=>{
             .json(new ApiResponse(200 , video , "video published succesfully"));
 })
 
+const deleteVideo = expressAsyncHandler(async(req , res)=>{
+    const {videoId} = req.params;
+
+    const video = await Video.findByIdAndDelete(videoId);
+    console.log("delete-response object : " , video);
+    
+    return res
+            .status(200)
+            .json(new ApiResponse(200 , {} , "video deleted succesfully"));
+})
+
 export {
     publishVideo , 
     getVideo , 
     updateVideoDetails ,
     toggleVideoPublishStatus ,
+    deleteVideo
 }
