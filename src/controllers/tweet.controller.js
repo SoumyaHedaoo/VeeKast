@@ -24,9 +24,27 @@ const createTweet = expressAsyncHandler(async(req , res)=>{
     return res
             .status(200)
             .json(new ApiResponse(200 , createdTweet , "tweet created successfully"));
+});
+
+const editTweet = expressAsyncHandler(async(req , res)=>{
+    const {tweetId} = req.params;
+
+    const {content} = req.body;
+
+    const tweet = await Tweet.findByIdAndUpdate(tweetId , {
+        $set : {
+            content : content,
+        }
+    } , {new : true})
+
+    return res
+            .status(200)
+            .json(new ApiResponse(200 , tweet , "tweet edited succesfully"))
 })
 
 
 export {
     createTweet ,
+    editTweet ,
+    
 }
