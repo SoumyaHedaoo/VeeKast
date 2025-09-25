@@ -42,9 +42,19 @@ const editTweet = expressAsyncHandler(async(req , res)=>{
             .json(new ApiResponse(200 , tweet , "tweet edited succesfully"))
 })
 
+const deleteTweet = expressAsyncHandler(async(req , res)=>{
+    const {tweetId} = req.params;
+
+    const tweet =await Tweet.findByIdAndDelete(tweetId);
+    
+    if(!tweet) throw new ApiError(404 , "tweet with this ID not found");
+    return res
+            .status(200)
+            .json(new ApiResponse(200 , {} , "tweet deleted successfully"));
+})
 
 export {
     createTweet ,
     editTweet ,
-    
+    deleteTweet ,
 }
