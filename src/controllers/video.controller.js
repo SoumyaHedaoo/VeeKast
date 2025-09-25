@@ -90,8 +90,24 @@ const updateVideoDetails = expressAsyncHandler(async(req , res)=>{
 
 })
 
+const toggleVideoPublishStatus = expressAsyncHandler(async(req , res)=>{
+
+    const {videoId} = req.params;
+
+    const video =await  Video.findByIdAndUpdate(videoId , {
+        $set : {
+            isPublished : true,
+        }
+    } , {new : true});
+
+    return res
+            .status(200)
+            .json(new ApiResponse(200 , video , "video published succesfully"));
+})
+
 export {
     publishVideo , 
     getVideo , 
     updateVideoDetails ,
+    toggleVideoPublishStatus ,
 }
