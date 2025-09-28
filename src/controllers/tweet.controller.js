@@ -1,4 +1,5 @@
 import { Tweet } from "../models/tweet.model.js";
+import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { expressAsyncHandler } from "../utils/expressAsyncHandler.js";
@@ -53,8 +54,23 @@ const deleteTweet = expressAsyncHandler(async(req , res)=>{
             .json(new ApiResponse(200 , {} , "tweet deleted successfully"));
 })
 
+const getAllTweets = expressAsyncHandler(async(req , res)=>{
+    const {userId} = req.params;
+
+    const user = await User.findById(userId);
+
+    if(!user) throw new ApiError(404 , "user do not exits");
+
+    const allTweets = await Tweet.find({owner : user})
+
+    return res
+            .status(200)
+            .json(new ApiResponse(200 , allTweets , "all tweets fetched successfully"))
+})
+
 export {
     createTweet ,
     editTweet ,
     deleteTweet ,
+    getAllTweets
 }
